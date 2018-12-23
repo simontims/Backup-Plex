@@ -2,8 +2,8 @@
 # Simon Tims
 
 # Settings
-$mirror = "C:\path\to\mirror"
-$destination = "\\path\to\destination"
+$mirror = "D:\Backup\Plex"
+$destination = "\\bubblenas1\general\backups\Plex"
 $tempLocation = "C:\temp"
 
 # Do not change anything below this line
@@ -18,11 +18,12 @@ Add-Type -assembly "system.io.compression.filesystem"
 $regKey = "HKEY_CURRENT_USER\Software\Plex, Inc.\Plex Media Server"
 $source = Join-Path -Path $env:LOCALAPPDATA -ChildPath "Plex Media Server"
 $cacheFolder = Join-Path -Path $source -ChildPath "cache"
+$metadataFolder = Join-Path -Path $source -ChildPath "Metadata"
 $regKeyFile = Join-Path -Path $mirror -ChildPath "PlexRegistryKey.reg"
 $zipFile = Join-Path -Path $tempLocation -ChildPath "Plex.zip"
 
 # Mirror Plex data folder
-robocopy $source $mirror /MIR /NFL /NDL /R:0 /W:0 /XD $cacheFolder
+robocopy $source $mirror /MIR /NFL /NDL /R:0 /W:0 /XD $cacheFolder /XD $metadataFolder
 
 # Export Plex Registry key 
 Reg export $regKey $regKeyFile
@@ -34,4 +35,12 @@ if (Test-Path $zipFile) {Remove-Item $zipFile}
 [io.compression.zipfile]::CreateFromDirectory($mirror, $zipFile)
 
 # Move zipfile to destination
-Move-Item $zipFile $destination -Force
+try
+{
+    Move-Item $zipFile $destination -Force
+}
+catch
+{
+    Write-Host "Unable to move $zipfile to $destination"
+}
+
