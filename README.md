@@ -1,5 +1,9 @@
 # Backup-Plex
-Powershell script that backs up a standard Windows Plex Media Server installation to a mirror and to a zip file in a second location.
+Powershell script that backs up a standard Windows Plex Media Server installation.
+
+Does not include any media!
+
+Important files are backed up to a mirror location and to a zip file in another location.
 
 A Plex backup should contain the contents of %USERAPPDATA%\Plex Media Server
 and an export of the Registry key HKEY_CURRENT_USER\Software\Plex, Inc.\Plex Media Server
